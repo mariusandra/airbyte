@@ -37,12 +37,14 @@ import io.airbyte.protocol.models.JsonSchemaPrimitive;
 import io.airbyte.protocol.models.SyncMode;
 import io.airbyte.test.utils.CockroachDBContainerHelper;
 import java.sql.JDBCType;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,7 +77,7 @@ class CockroachDbJdbcSourceAcceptanceTest extends JdbcSourceAcceptanceTest {
     config = Jsons.jsonNode(ImmutableMap.builder()
         .put("host", PSQL_DB.getHost())
         .put("port", PSQL_DB.getFirstMappedPort() - 1)
-        .put("database", dbName)
+        .put("database", PSQL_DB.getDatabaseName())
         .put("username", PSQL_DB.getUsername())
         .put("password", PSQL_DB.getPassword())
         .put("ssl", false)
@@ -87,6 +89,14 @@ class CockroachDbJdbcSourceAcceptanceTest extends JdbcSourceAcceptanceTest {
     CockroachDBContainerHelper.runSqlScript(MountableFile.forHostPath(tmpFilePath), PSQL_DB);
 
     super.setup();
+  }
+
+  @AfterEach
+  public void clean() throws SQLException {
+    super.database.execute(connection -> connection.createStatement().execute(String
+        .format("DROP SCHEMA IF EXISTS %s CASCADE;", SCHEMA_NAME)));
+    super.database.execute(connection -> connection.createStatement().execute(String
+        .format("DROP SCHEMA IF EXISTS %s CASCADE;", SCHEMA_NAME2)));
   }
 
   @Override
