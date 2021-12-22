@@ -1,5 +1,6 @@
 name: Detect Changed Modules and Build Reports
-on: [push]
+on:
+  push:
 jobs:
   detect-changed-modules:
     name: Detect Changed Modules
@@ -25,7 +26,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build Reports
-        run: python ./tools/bin/build_static_checkers_reports.py
-        with:
-          mode: stop
-          changed-modules: ${{ needs.detect-changed-modules.outputs.changed-modules }}
+        run: python ./tools/bin/build_static_checkers_reports.py ${{needs.detect-changed-modules.outputs.changed-modules}}
