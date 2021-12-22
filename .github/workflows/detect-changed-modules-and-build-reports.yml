@@ -18,7 +18,7 @@ jobs:
       - name: Detect Changed Modules
         id: detect-changed-modules
         run: |
-          OUTPUT=($(python ./tools/bin/detect_changed_modules.py $(git diff master --name-only) | tr -d '[],')) | echo "::set-output name=changed-modules::${OUTPUT[@]}"
+          echo "::set-output name=changed-modules::/test-output"
   build-reports:
     name: Build Static Checkers Reports
     needs:
