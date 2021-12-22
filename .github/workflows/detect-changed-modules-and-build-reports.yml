@@ -25,5 +25,11 @@ jobs:
       - detect-changed-modules
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Airbyte
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
       - name: Build Reports
         run: python ./tools/bin/build_static_checkers_reports.py ${{needs.detect-changed-modules.outputs.changed-modules}}
