@@ -1,0 +1,31 @@
+name: Detect Changed Modules and Build Reports
+on: [push]
+jobs:
+  detect-changed-modules:
+    name: Detect Changed Modules
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    outputs:
+      changed-modules: ${{ steps.detect-changed-modules.outputs.changed-modules }}
+    steps:
+      - name: Checkout Airbyte
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Detect Changed Modules
+        id: detect-changed-modules
+        run: |
+          ::set-output name=changed-modules::(python ./tools/bin/detect_changed_modules.py $(git diff master --name-only))
+  build-reports:
+    name: Build Static Checkers Reports
+    needs:
+      - detect-changed-modules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Reports
+        run: python ./tools/bin/build_static_checkers_reports.py
+        with:
+          mode: stop
+          changed-modules: ${{ needs.detect-changed-modules.outputs.changed-modules }}
