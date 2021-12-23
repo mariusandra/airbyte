@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -139,6 +140,15 @@ public class TemporalClient {
             destinationLauncherConfig,
             input,
             connectionId));
+  }
+
+  public void migrateSyncIfNeeded(final Set<UUID> connectionIds) {
+    connectionIds.forEach((connectionId) -> {
+      if (!isWorkflowRunning("connection_updater_" + connectionId)) {
+        log.info("Migrating: " + connectionId);
+        submitConnectionUpdaterAsync(connectionId);
+      }
+    });
   }
 
   public void submitConnectionUpdaterAsync(final UUID connectionId) {

@@ -197,7 +197,10 @@ public class ConfigurationApi implements io.airbyte.api.V1Api {
         jobPersistence,
         jobNotifier,
         temporalService,
-        new OAuthConfigSupplier(configRepository, trackingClient), workerEnvironment, logConfigs, temporalWorkerRunFactory);
+        new OAuthConfigSupplier(configRepository, trackingClient),
+        workerEnvironment,
+        logConfigs,
+        temporalWorkerRunFactory);
     final ExecutorService threadPool = Executors.newFixedThreadPool(configs.getMaxWorkers().getMaxSyncWorkers());
     final ConnectionHelper connectionHelper = new ConnectionHelper(configRepository, workspaceHelper, workerConfigs);
     connectionsHandler = new ConnectionsHandler(
