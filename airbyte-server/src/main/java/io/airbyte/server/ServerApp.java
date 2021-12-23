@@ -180,7 +180,7 @@ public class ServerApp implements ServerRunnable {
     final JobTracker jobTracker = new JobTracker(configRepository, jobPersistence, trackingClient);
 
     final WorkflowServiceStubs temporalService = TemporalUtils.createTemporalService(configs.getTemporalHost());
-    final TemporalClient temporalClient = TemporalClient.production(configs.getTemporalHost(), configs.getWorkspaceRoot());
+    final TemporalClient temporalClient = TemporalClient.production(configs.getTemporalHost(), configs.getWorkspaceRoot(), configs);
     final OAuthConfigSupplier oAuthConfigSupplier = new OAuthConfigSupplier(configRepository, trackingClient);
     final SchedulerJobClient schedulerJobClient =
         new DefaultSchedulerJobClient(jobPersistence, new DefaultJobCreator(jobPersistence, configRepository));
@@ -189,7 +189,7 @@ public class ServerApp implements ServerRunnable {
     final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
     final FeatureFlags featureFlags = new EnvVariableFeatureFlags();
     final TemporalWorkerRunFactory temporalWorkerRunFactory = new TemporalWorkerRunFactory(
-        TemporalClient.production(configs.getTemporalHost(), configs.getWorkspaceRoot()),
+        TemporalClient.production(configs.getTemporalHost(), configs.getWorkspaceRoot(), configs),
         configs.getWorkspaceRoot(),
         configs.getAirbyteVersionOrWarning(),
         featureFlags);
