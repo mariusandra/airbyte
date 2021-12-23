@@ -25,4 +25,5 @@ def list_changed_modules(changed_files):
 
 if __name__ == "__main__":
     changed_modules = list_changed_modules(sys.argv[1:])
+    print("Changed Files: ", sys.argv)
     print(",".join(changed_modules))
